@@ -1,6 +1,7 @@
 package mods.TeamL33T.IpodMod;
 
 import net.minecraft.block.Block;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.Mod;
@@ -16,8 +17,10 @@ public class Main {
 	
 	@EventHandler
 	public void init(FMLInitializationEvent ev) {
+		
 		GameRegistry.registerItem(playerIpod, "iPod");
 		LanguageRegistry.addName(playerIpod, "iPod");
+		
 		GameRegistry.addRecipe(new ItemStack(500,1,1), new Object[] {
 			"sfs", "fcf", "rfr", 
 			's', new ItemStack(501,1,1), 
