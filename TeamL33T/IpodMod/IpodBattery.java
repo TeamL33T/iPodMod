@@ -50,7 +50,7 @@ public class IpodBattery extends Item {
 			@Override
 			public void run() {
 				if (level >= 2) {
-					decreaseLevel();
+					decreaseLevel(1);
 				} else if (level <= 1) {
 					setState(0);
 				}
@@ -61,7 +61,7 @@ public class IpodBattery extends Item {
 			@Override
 			public void run() {
 				if (level > 0 && level <= 99) {
-					increaseLevel();
+					increaseLevel(1);
 				}
 			}
 		};
@@ -176,13 +176,21 @@ public class IpodBattery extends Item {
 	}
 	
 	/* Decrease battery level */
-	private void decreaseLevel() {
-		this.level--;
+	public void decreaseLevel(int percent) {
+		if ((level - percent) < 0) {
+			level = 0;
+		} else {
+			level -= percent;
+		}
 	}
 	
 	/* Increase battery level */
-	private void increaseLevel() {
-		this.level++;
+	public void increaseLevel(int percent) {
+		if ((level + percent) > 100) {
+			level = 100;
+		} else {
+			level += percent;
+		}
 	}
 	
 	/* TESTING USE */
