@@ -1,7 +1,5 @@
 package mods.TeamL33T.IpodMod;
 
-import org.lwjgl.input.Mouse;
-
 import mods.TeamL33T.IpodMod.battery.BatteryBasic;
 import mods.TeamL33T.IpodMod.battery.BatteryGalactic;
 import mods.TeamL33T.IpodMod.battery.BatteryMega;
@@ -11,6 +9,7 @@ import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -23,10 +22,10 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class Main {
 	
-	public static CreativeTabs tabIpod = new CreativeTabs("Ipod") {
-		@Override
-		public int getTabIconItemIndex() {
-			return 500;
+	public static CreativeTabs tabIpod = new CreativeTabs("tabIpod") {
+
+		public ItemStack getIconItemStack(){
+			return new ItemStack(Ipod);
 		}
 	};
 	
@@ -36,6 +35,7 @@ public class Main {
 	public static Item batteryMega = new BatteryMega();
 	public static Item batteryUltra = new BatteryUltra();
 	public static Item batteryGalactic = new BatteryGalactic();
+	public static Block IpodCharger = new BlockIpodCharger(506, false);
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
@@ -44,17 +44,30 @@ public class Main {
 	
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
+		
+		// Game Registries
 		GameRegistry.registerItem(Ipod, "iPod");
 		GameRegistry.registerItem(batteryBasic, "Basic iPod Battery");
 		GameRegistry.registerItem(batteryPro, "Pro iPod Battery");
 		GameRegistry.registerItem(batteryMega, "Mega iPod Battery");
 		GameRegistry.registerItem(batteryUltra, "Ultra iPod Battery");
 		GameRegistry.registerItem(batteryGalactic, "Galactic iPod Battery");
+		GameRegistry.registerBlock(IpodCharger, "IpodCharger");
+		
+		// Language Registries
+		LanguageRegistry.addName(Ipod, "iPod");
 		LanguageRegistry.addName(batteryBasic, "Basic iPod Battery");
 		LanguageRegistry.addName(batteryPro, "Pro iPod Battery");
 		LanguageRegistry.addName(batteryMega, "Mega iPod Battery");
 		LanguageRegistry.addName(batteryUltra, "Ultra iPod Battery");
 		LanguageRegistry.addName(batteryGalactic, "Galactic iPod Battery");
+		LanguageRegistry.addName(IpodCharger, "iPod Charger");
+		LanguageRegistry.instance().addStringLocalization("itemGroup.tabIpod", "en_US", "iPod Mod");
+		
+		// Minecraft Forge Registries
+		MinecraftForge.setBlockHarvestLevel(IpodCharger, "pickaxe", 1);
+		
+		// Crafting Recipes
 		GameRegistry.addRecipe(new ItemStack(Ipod), new Object[] {
 			"sfs", "fcf", "rfr", 
 			's', new ItemStack(501,1,1), 
