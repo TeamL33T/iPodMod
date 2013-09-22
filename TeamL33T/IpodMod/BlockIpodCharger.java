@@ -1,4 +1,4 @@
-package mods.TeamL33T.IpodMod;
+package iPodMod.TeamL33T.IpodMod;
 
 import java.util.Random;
 
@@ -14,7 +14,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
