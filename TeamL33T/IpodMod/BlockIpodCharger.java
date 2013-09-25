@@ -14,6 +14,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -126,10 +127,12 @@ public class BlockIpodCharger extends BlockContainer
         this.ipodChargerIconTop = par1IconRegister.registerIcon("ipodmod:ipodCharger_top");
     }
 
+    public void displayGUIIpodCharger(TileEntityIpodCharger par1TileEntityIpodCharger) {}
+    
     /**
      * Called upon block activation (right click on the block.)
      */
-    public boolean onBlockActivated(World par1World, int par2, int par3, int par4, EntityPlayer par5EntityPlayer, int par6, float par7, float par8, float par9)
+    public boolean onBlockActivated(World par1World, int par2, int par3, int par4, BlockIpodCharger par5EntityPlayer, int par6, float par7, float par8, float par9)
     {
         if (par1World.isRemote)
         {
@@ -141,7 +144,7 @@ public class BlockIpodCharger extends BlockContainer
 
             if (tileentityipodcharger != null)
             {
-                par5EntityPlayer.displayGUIFurnace(tileentityipodcharger);
+                par5EntityPlayer.displayGUIIpodCharger(tileentityipodcharger);
             }
 
             return true;
@@ -181,7 +184,7 @@ public class BlockIpodCharger extends BlockContainer
      */
     public TileEntity createNewTileEntity(World par1World)
     {
-        return new TileEntityIpodCharger(5);
+        return new TileEntityIpodCharger(10);
     }
 
     /**

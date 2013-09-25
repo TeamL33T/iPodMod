@@ -266,6 +266,4 @@ public class TileEntityIpodCharger extends TileEntity implements ISidedInventory
 			}
 		}
 	}
-
-
 }
