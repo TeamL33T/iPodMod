@@ -1,10 +1,6 @@
-package iPodMod.TeamL33T.IpodMod;
+package org.TeamL33T.IpodMod;
 
-import iPodMod.TeamL33T.IpodMod.battery.BatteryBasic;
-import iPodMod.TeamL33T.IpodMod.battery.BatteryGalactic;
-import iPodMod.TeamL33T.IpodMod.battery.BatteryMega;
-import iPodMod.TeamL33T.IpodMod.battery.BatteryPro;
-import iPodMod.TeamL33T.IpodMod.battery.BatteryUltra;
+import org.TeamL33T.IpodMod.battery.*;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;

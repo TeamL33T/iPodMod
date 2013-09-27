@@ -1,6 +1,6 @@
-package iPodMod.TeamL33T.IpodMod.battery;
+package org.TeamL33T.IpodMod.battery;
 
-import iPodMod.TeamL33T.IpodMod.IpodBattery;
+import org.TeamL33T.IpodMod.IpodBattery;
 
 public class BatteryGalactic extends IpodBattery {
 

@@ -1,8 +1,9 @@
-package iPodMod.TeamL33T.IpodMod;
+package org.TeamL33T.IpodMod.tileentity;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.TeamL33T.IpodMod.IpodBattery;
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -266,4 +267,6 @@ public class TileEntityIpodCharger extends TileEntity implements ISidedInventory
 			}
 		}
 	}
+
+
 }

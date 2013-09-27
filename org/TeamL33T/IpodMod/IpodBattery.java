@@ -1,4 +1,4 @@
-package iPodMod.TeamL33T.IpodMod;
+package org.TeamL33T.IpodMod;
 
 import java.util.Timer;
 import java.util.TimerTask;

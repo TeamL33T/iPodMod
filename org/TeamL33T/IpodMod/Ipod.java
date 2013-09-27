@@ -1,4 +1,4 @@
-package iPodMod.TeamL33T.IpodMod;
+package org.TeamL33T.IpodMod;
 
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
