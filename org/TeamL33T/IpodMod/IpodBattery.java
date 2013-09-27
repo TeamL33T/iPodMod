@@ -38,6 +38,7 @@ public class IpodBattery extends Item {
 	/* Constructor will instantiate the battery and its timers and tasks */
 	public IpodBattery(int id, int consumeD, int idleD) {
 		super(id);
+		this.setMaxStackSize(1);
 		this.consumeSecsDecrease = consumeD;
 		this.idleSecsDecrease = idleD;
 		this.isIdle = true;

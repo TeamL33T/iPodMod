@@ -1,6 +1,9 @@
 package org.TeamL33T.IpodMod;
 
+import java.io.IOException;
+
 import org.TeamL33T.IpodMod.battery.*;
+
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -19,30 +22,31 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 public class Main {
 	
 	public static CreativeTabs tabIpod = new CreativeTabs("tabIpod") {
-
 		public ItemStack getIconItemStack(){
-			return new ItemStack(Ipod);
+			return new ItemStack(iPod);
 		}
 	};
 	
-	public static Item Ipod = new Ipod(500);
+	public static Item iPod = new Ipod();
+	public static Item iPodCircuit = new IpodCircuit();
 	public static Item batteryBasic = new BatteryBasic();
 	public static Item batteryPro = new BatteryPro();
 	public static Item batteryMega = new BatteryMega();
 	public static Item batteryUltra = new BatteryUltra();
 	public static Item batteryGalactic = new BatteryGalactic();
 	public static Block IpodCharger = new BlockIpodCharger(506, false);
+	public static IpodSoundLoader eventSoundLoader;
 	
 	@EventHandler
-	public void preInit(FMLPreInitializationEvent event) {
-		
+	public void preInit(FMLPreInitializationEvent event) throws IOException {
+		eventSoundLoader = new IpodSoundLoader();
 	}
 	
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		
 		// Game Registries
-		GameRegistry.registerItem(Ipod, "iPod");
+		GameRegistry.registerItem(iPod, "iPod");
 		GameRegistry.registerItem(batteryBasic, "Basic iPod Battery");
 		GameRegistry.registerItem(batteryPro, "Pro iPod Battery");
 		GameRegistry.registerItem(batteryMega, "Mega iPod Battery");
@@ -51,7 +55,7 @@ public class Main {
 		GameRegistry.registerBlock(IpodCharger, "IpodCharger");
 		
 		// Language Registries
-		LanguageRegistry.addName(Ipod, "iPod");
+		LanguageRegistry.addName(iPod, "iPod");
 		LanguageRegistry.addName(batteryBasic, "Basic iPod Battery");
 		LanguageRegistry.addName(batteryPro, "Pro iPod Battery");
 		LanguageRegistry.addName(batteryMega, "Mega iPod Battery");
@@ -61,15 +65,52 @@ public class Main {
 		LanguageRegistry.instance().addStringLocalization("itemGroup.tabIpod", "en_US", "iPod Mod");
 		
 		// Minecraft Forge Registries
+		MinecraftForge.EVENT_BUS.register(eventSoundLoader);
 		MinecraftForge.setBlockHarvestLevel(IpodCharger, "pickaxe", 1);
 		
 		// Crafting Recipes
-		GameRegistry.addRecipe(new ItemStack(Ipod), new Object[] {
+		GameRegistry.addRecipe(new ItemStack(iPod), new Object[] {
 			"sfs", "fcf", "rfr", 
 			's', new ItemStack(501,1,1), 
 			'f', new ItemStack(502,1,1),
-			'c', new ItemStack(503,1,1),
-			'r', new ItemStack(Block.redstoneWire)
+			'c', new ItemStack(iPodCircuit),
+			'r', new ItemStack(Item.redstone)
+		});
+		
+		GameRegistry.addRecipe(new ItemStack(batteryBasic), new Object[] {
+			" i ", " b ", " i ",
+			'i', new ItemStack(Item.ingotIron),
+			'b', new ItemStack(iPodCircuit)
+		});
+		
+		GameRegistry.addRecipe(new ItemStack(batteryPro), new Object[] {
+			" g ", "rbr", " g ",
+			'g', new ItemStack(Item.ingotGold),
+			'r', new ItemStack(Item.redstone),
+			'b', new ItemStack(iPodCircuit)
+		});
+		
+		GameRegistry.addRecipe(new ItemStack(batteryMega), new Object[] {
+			"igi", "rbr", "igi",
+			'i', new ItemStack(Item.ingotIron),
+			'g', new ItemStack(Item.ingotGold),
+			'r', new ItemStack(Item.redstone),
+			'b', new ItemStack(iPodCircuit)
+		});
+		
+		GameRegistry.addRecipe(new ItemStack(batteryUltra), new Object[] {
+			"gdg", "rbr", "gdg",
+			'd', new ItemStack(Item.diamond),
+			'g', new ItemStack(Item.ingotGold),
+			'r', new ItemStack(Item.redstone),
+			'b', new ItemStack(iPodCircuit)
+		});
+		
+		GameRegistry.addRecipe(new ItemStack(batteryGalactic), new Object[] {
+			"ddd", "lbl", "ddd",
+			'd', new ItemStack(Block.blockDiamond),
+			'l', new ItemStack(Item.bucketLava), 
+			'b', new ItemStack(iPodCircuit)
 		});
 	}
 	

@@ -14,23 +14,16 @@ public class Ipod extends Item {
 
 	public boolean isActived = false;
 	
-	public Ipod(int par1) {
-		super(par1);
+	public Ipod() {
+		super(500);
 		this.setCreativeTab(Main.tabIpod);
-		this.setUnlocalizedName("Ipod");
+		this.setUnlocalizedName("iPod");
 	}
 	
 	// Initiate GUI when iPod is right clicked
 	@Override
 	public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-		isActived = (isActived ? false : true);
-		return par1ItemStack;
-	}
-	
-	@EventHandler
-	public void onPlayerMove(PlayerSleepInBedEvent ev) {
-		if (isActived==false) { return; }
-		ev.entityPlayer.getFoodStats().setFoodLevel(0);
+		return null;
 	}
 	
 	// Register Texture
