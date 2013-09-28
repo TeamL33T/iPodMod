@@ -23,15 +23,15 @@ public class Ipod extends Item {
 	// Initiate GUI when iPod is right clicked
 	@Override
 	public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-		return null;
+		
+		
+		return par1ItemStack;
 	}
 	
 	// Register Texture
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister par1IconRegister) {
-		
 		this.itemIcon = par1IconRegister.registerIcon("ipodmod:ipod");
-		
 	}
 	
 }

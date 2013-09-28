@@ -1,25 +1,37 @@
 package org.TeamL33T.IpodMod;
 
 import java.io.IOException;
-
-import org.TeamL33T.IpodMod.battery.*;
+import java.io.UnsupportedEncodingException;
 
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
+
+import org.TeamL33T.IpodMod.battery.BatteryBasic;
+import org.TeamL33T.IpodMod.battery.BatteryGalactic;
+import org.TeamL33T.IpodMod.battery.BatteryMega;
+import org.TeamL33T.IpodMod.battery.BatteryPro;
+import org.TeamL33T.IpodMod.battery.BatteryUltra;
+import org.TeamL33T.IpodMod.items.IpodCircuit;
+import org.TeamL33T.IpodMod.tileentity.TileEntityIpodCharger;
+
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
-@Mod(modid = "iPodMod", name = "iPodMod", version = "0.0.1")
-@NetworkMod(clientSideRequired = true, serverSideRequired = false)
+@Mod(modid = ModInfo.ID, name = ModInfo.NAME, version = ModInfo.VERSION)
+@NetworkMod(channels = {ModInfo.ID}, clientSideRequired = true, serverSideRequired = false)
 public class Main {
+	
+	@SidedProxy(clientSide = ModInfo.CLIENTP_LOC, serverSide = ModInfo.SERVERP_LOC)
+	public static CommonProxy proxy;
 	
 	public static CreativeTabs tabIpod = new CreativeTabs("tabIpod") {
 		public ItemStack getIconItemStack(){
@@ -35,11 +47,12 @@ public class Main {
 	public static Item batteryUltra = new BatteryUltra();
 	public static Item batteryGalactic = new BatteryGalactic();
 	public static Block IpodCharger = new BlockIpodCharger(506, false);
-	public static IpodSoundLoader eventSoundLoader;
+	public static IpodSounds eventSounds;
 	
 	@EventHandler
-	public void preInit(FMLPreInitializationEvent event) throws IOException {
-		eventSoundLoader = new IpodSoundLoader();
+	public void preInit(FMLPreInitializationEvent event) {
+		ConfigHandler.init(event.getSuggestedConfigurationFile());
+		eventSounds = new IpodSounds();
 	}
 	
 	@EventHandler
@@ -52,6 +65,7 @@ public class Main {
 		GameRegistry.registerItem(batteryMega, "Mega iPod Battery");
 		GameRegistry.registerItem(batteryUltra, "Ultra iPod Battery");
 		GameRegistry.registerItem(batteryGalactic, "Galactic iPod Battery");
+		GameRegistry.registerTileEntity(TileEntityIpodCharger.class, "TileEntityIpodCharger");
 		GameRegistry.registerBlock(IpodCharger, "IpodCharger");
 		
 		// Language Registries
@@ -65,7 +79,7 @@ public class Main {
 		LanguageRegistry.instance().addStringLocalization("itemGroup.tabIpod", "en_US", "iPod Mod");
 		
 		// Minecraft Forge Registries
-		MinecraftForge.EVENT_BUS.register(eventSoundLoader);
+		MinecraftForge.EVENT_BUS.register(eventSounds);
 		MinecraftForge.setBlockHarvestLevel(IpodCharger, "pickaxe", 1);
 		
 		// Crafting Recipes

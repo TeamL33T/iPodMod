@@ -3,7 +3,7 @@ package org.TeamL33T.IpodMod.tileentity;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.TeamL33T.IpodMod.IpodBattery;
+import org.TeamL33T.IpodMod.battery.IpodBattery;
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.entity.player.EntityPlayer;

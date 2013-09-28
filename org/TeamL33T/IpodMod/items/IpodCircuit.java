@@ -1,4 +1,6 @@
-package org.TeamL33T.IpodMod;
+package org.TeamL33T.IpodMod.items;
+
+import org.TeamL33T.IpodMod.Main;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
