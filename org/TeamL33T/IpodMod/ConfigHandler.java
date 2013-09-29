@@ -7,19 +7,14 @@ import net.minecraftforge.common.Configuration;
 public class ConfigHandler {
 	
 	public static Configuration config;
-	public static String[] oggNames;
+	public static String[] sounds;
 	
 	public static void init(File configFile) {
 		config = new Configuration(configFile);
 		
 		config.load();
 		
-		String oggNamesUnsplit = config.get(Configuration.CATEGORY_GENERAL, "OggNames", "").getString();
-		oggNames = oggNamesUnsplit.split(",");
-		
-		for (String ogg : oggNames) {
-			System.out.println(ogg);
-		}
+		sounds = config.get(Configuration.CATEGORY_GENERAL, "OggNames", "80s - Aha - Take On Me.ogg,B.ogg").getString().split(",");
 		
 		config.save();
 	}

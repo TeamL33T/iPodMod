@@ -185,7 +185,7 @@ public class BlockIpodCharger extends BlockContainer
      */
     public TileEntity createNewTileEntity(World par1World)
     {
-        return new TileEntityIpodCharger(10);
+        return new TileEntityIpodCharger();
     }
 
     /**

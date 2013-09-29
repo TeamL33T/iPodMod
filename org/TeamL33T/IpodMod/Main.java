@@ -15,6 +15,8 @@ import org.TeamL33T.IpodMod.battery.BatteryMega;
 import org.TeamL33T.IpodMod.battery.BatteryPro;
 import org.TeamL33T.IpodMod.battery.BatteryUltra;
 import org.TeamL33T.IpodMod.items.IpodCircuit;
+import org.TeamL33T.IpodMod.proxy.ClientProxy;
+import org.TeamL33T.IpodMod.proxy.CommonProxy;
 import org.TeamL33T.IpodMod.tileentity.TileEntityIpodCharger;
 
 import cpw.mods.fml.common.Mod;
@@ -47,16 +49,17 @@ public class Main {
 	public static Item batteryUltra = new BatteryUltra();
 	public static Item batteryGalactic = new BatteryGalactic();
 	public static Block IpodCharger = new BlockIpodCharger(506, false);
-	public static IpodSounds eventSounds;
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		ConfigHandler.init(event.getSuggestedConfigurationFile());
-		eventSounds = new IpodSounds();
 	}
 	
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
+		
+		// Proxy Events
+		proxy.registerIpodSounds();
 		
 		// Game Registries
 		GameRegistry.registerItem(iPod, "iPod");
@@ -79,7 +82,6 @@ public class Main {
 		LanguageRegistry.instance().addStringLocalization("itemGroup.tabIpod", "en_US", "iPod Mod");
 		
 		// Minecraft Forge Registries
-		MinecraftForge.EVENT_BUS.register(eventSounds);
 		MinecraftForge.setBlockHarvestLevel(IpodCharger, "pickaxe", 1);
 		
 		// Crafting Recipes
@@ -126,6 +128,7 @@ public class Main {
 			'l', new ItemStack(Item.bucketLava), 
 			'b', new ItemStack(iPodCircuit)
 		});
+		
 	}
 	
 }

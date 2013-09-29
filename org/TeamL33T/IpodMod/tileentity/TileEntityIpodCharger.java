@@ -3,14 +3,15 @@ package org.TeamL33T.IpodMod.tileentity;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.TeamL33T.IpodMod.battery.IpodBattery;
-import org.lwjgl.input.Mouse;
-
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+
+import org.TeamL33T.IpodMod.battery.IpodBattery;
 
 public class TileEntityIpodCharger extends TileEntity implements ISidedInventory {
 	
@@ -31,26 +32,37 @@ public class TileEntityIpodCharger extends TileEntity implements ISidedInventory
 	private TimerTask cdTask;
 	private Timer timer = new Timer();
 	private Timer ohTimer = new Timer();
+	private Timer cdTimer = new Timer();
 	private ItemStack[] chargerItemStacks = new ItemStack[1];
-	private final int chargeIncrSecs = 45;
+	private final int chargeIncrSecs = 45*1000;
+	private final int decrOverheat = 30*1000;
 	public IpodBattery battery;
 	public int batteryLevel;
 	public int overheatLevel;
 	public int state = 0;
-	private boolean isOverheating;
-	private boolean isCharging;
-	private int chargeTimeSecs;
-	private final int decrOverheat = 30;
+	public boolean isOverheating;
+	public boolean isCharging;
+	public boolean isCooling;
+	private int fuelLevel;
+	protected int x, y, z;
 	
-	public TileEntityIpodCharger(int chargeIncrSecs) {
+	public TileEntityIpodCharger() {
+		
 		task = new TimerTask() {
 			@Override
 			public void run() {
 				if (battery.getLevel() >= 100) {
 					initOverheater();
-					this.cancel();
+					timer.cancel();
 				} else {
-					battery.increaseLevel(1);
+					if (fuelLevel > 0) {
+						useFuel();
+						battery.increaseLevel(1);
+					} else {
+						battery.setState(1);
+						initCooler();
+						timer.cancel();
+					}
 				}
 			}
 		};
@@ -59,10 +71,41 @@ public class TileEntityIpodCharger extends TileEntity implements ISidedInventory
 			@Override
 			public void run() {
 				if (battery.getLevel() >= 100) {
-					overheatLevel++;
+					if (fuelLevel > 0) {
+						useFuel();
+						overheatLevel++;
+					} else {
+						battery.setState(1);
+						initCooler();
+						ohTimer.cancel();
+						return;
+					}
+					
+					if (overheatLevel == 25) {
+						state = 4;
+					} else if (overheatLevel == 50) {
+						explode();
+					}
 				}
 			}
 		};
+		
+		cdTask = new TimerTask() {
+			@Override
+			public void run() {
+				battery.setState(1);
+				if (state == 1) {
+					state = 0;
+					stopTimers();
+				} else if (state == 2 || state == 3) {
+					overheatLevel--;
+					if (overheatLevel == 0) {
+						state = 1;
+					}
+				}
+			}
+		};
+		
 	}
 	
 	@Override
@@ -85,8 +128,11 @@ public class TileEntityIpodCharger extends TileEntity implements ISidedInventory
                 itemstack = this.chargerItemStacks[par1];
                 this.chargerItemStacks[par1] = null;
                 
-                if (par1 == 0) {
+                if (chargerItemStacks[0] == null) {
                 	this.cancelChargeOperation();
+                } else if (chargerItemStacks[1] == null) {
+                	battery.setState(1);
+                	this.battery = null;
                 }
                 
                 return itemstack;
@@ -99,14 +145,16 @@ public class TileEntityIpodCharger extends TileEntity implements ISidedInventory
                 {
                     this.chargerItemStacks[par1] = null;
                     
-                    if (par1 == 0) {
+                    if (chargerItemStacks[0] == null) {
                     	this.cancelChargeOperation();
+                    } else if (chargerItemStacks[1] == null) {
+                    	battery.setState(1);
+                    	this.battery = null;
                     }
                 }
                 
                 return itemstack;
             }
-			
 		} else {
 			return null;
 		}
@@ -118,18 +166,38 @@ public class TileEntityIpodCharger extends TileEntity implements ISidedInventory
 	}
 
 	@Override
-	/* Check if they're putting the right stuff */
+	/* Quite unreadable, eh? */
 	public void setInventorySlotContents(int i, ItemStack itemstack) {
 		int id = itemstack.itemID;
 		
 		if (i == 0) {
-			
+			if (isItemValidForSlot(i, itemstack)) {
+				if (this.chargerItemStacks[0] == null) {
+					this.chargerItemStacks[0] = itemstack;
+				} else {
+					if (this.chargerItemStacks[0].itemID == id) {
+						int num = itemstack.stackSize + chargerItemStacks[0].stackSize;
+						if (num >= 1 && num <= 64) {
+							itemstack = new ItemStack(itemstack.getItem(), num);
+							this.chargerItemStacks[0] = itemstack;
+							updateFuelLevel();
+						}
+					}
+				}
+			}
 		} else if (i == 1) {
-			if (id >= 600 && id <= 604) {
-				this.chargerItemStacks[i] = itemstack;
+			if (isItemValidForSlot(i, itemstack) && this.chargerItemStacks[1] == null) {
+				this.chargerItemStacks[1] = itemstack;
+				this.battery = (IpodBattery) itemstack.getItem();
+				if (fuelLevel <= 0) {
+					this.battery.setState(1);
+				} else {
+					this.battery.setState(3);
+				}
+				
+				doChargeOperation();
 			}
 		}
-		
 	}
 
 	@Override
@@ -195,8 +263,6 @@ public class TileEntityIpodCharger extends TileEntity implements ISidedInventory
 			return true;
 		} else if (itemID == Item.bucketLava.itemID) {
 			return true;
-		} else if (itemID == 173) {
-			return true;
 		} else {
 			return false;
 		}
@@ -216,29 +282,25 @@ public class TileEntityIpodCharger extends TileEntity implements ISidedInventory
 				return 1;
 			} else if (itemID == Item.bucketLava.itemID) {
 				return 100;
-			} else if (itemID == 173) {
-				return 10;
 			}
 		}
 		return 0;
 	}
 	
 	public void cancelChargeOperation() {
-		isCharging = false;
 		stopTimers();
-	}
-	
-	public void doChargeOperation() {
-		// Do some charging :D
 		
-		// Check if it's overheating
-		if (state >= 2) {
-			
+		if (state > 0) {
+			initCooler();
 		}
 	}
 	
-	public boolean isCharging() {
-		return isCharging;
+	public void doChargeOperation() {
+		if (state == 0 || state == 1) {
+			initIncreaser();
+		} else if (state == 2 || state == 3) {
+			initOverheater();
+		}
 	}
 	
 	public void setBattery(IpodBattery battery) {
@@ -246,27 +308,68 @@ public class TileEntityIpodCharger extends TileEntity implements ISidedInventory
 	}
 	
 	private void initIncreaser() {
+		isCharging = true;
+		isOverheating = false;
+		isCooling = false;
+		
 		timer.schedule(task, 0, chargeIncrSecs);
 	}
 	
 	private void initOverheater() {
+		isCharging = false;
 		isOverheating = true;
+		isCooling = false;
+		
 		ohTimer.schedule(ohTask, 0, decrOverheat);
 	}
 	
-	private void stopTimers() {
-		timer.cancel();
-		ohTimer.cancel();
+	private void initCooler() {
+		isCharging = false;
+		isOverheating = false;
+		isCooling = true;
+		
+		cdTimer.schedule(cdTask, 0, decrOverheat);
 	}
 	
-	/* Cool the charger down (only if state 1-3) */
-	public void cooldown() {
-		if (state >= 1 && state <= 3) {
-			if (state == 1) {
-				
-			}
-		}
+	private void stopTimers() {
+		isCharging = false;
+		isOverheating = false;
+		isCooling = false;
+		
+		timer.cancel();
+		ohTimer.cancel();
+		cdTimer.cancel();
 	}
 
-
+	/* Update fuelLevel based on the stack size of fuel in the slot */
+	private void updateFuelLevel() {
+		this.fuelLevel = this.chargerItemStacks[0].stackSize;
+	}
+	
+	/* Consume 1 fuel */
+	private void useFuel() {
+		this.useFuel(1);
+	}
+	
+	/* Consume (percent) fuel */
+	private void useFuel(int percent) {
+		updateFuelLevel();
+		int predict = fuelLevel - percent;
+		
+		if (predict < 0) {
+			return;
+		} else if (predict == 0) {
+			this.chargerItemStacks[0] = null;
+		} else if (predict >= 1) {
+			ItemStack itemstack = new ItemStack(this.chargerItemStacks[0].getItem(), this.chargerItemStacks[0].stackSize - 1);
+			this.chargerItemStacks[0] = itemstack;
+		}
+		
+		updateFuelLevel();
+	}
+	
+	public void explode() {
+		// SOON :P
+	}
+	
 }

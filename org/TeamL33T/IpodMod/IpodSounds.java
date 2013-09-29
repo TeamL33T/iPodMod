@@ -11,21 +11,14 @@ import java.util.zip.ZipFile;
 
 import net.minecraft.client.audio.SoundManager;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
+import net.minecraftforge.common.Configuration;
 import net.minecraftforge.event.ForgeSubscribe;
 
 public class IpodSounds {
 	
-	public static ArrayList sounds;
-	
-	public IpodSounds() {
-		for (String ogg : ConfigHandler.oggNames) {
-			sounds.add(ogg);
-		}
-	}
-	
 	@ForgeSubscribe
 	public void onSound(SoundLoadEvent event) {
-		for (Object ogg : sounds) {
+		for (Object ogg : ConfigHandler.sounds) {
 			if (ogg instanceof String) {
 				String mainOgg = (String) ogg;
 				event.manager.addSound("ipodmod:" + ogg);
