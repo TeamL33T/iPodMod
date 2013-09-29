@@ -2,6 +2,8 @@ iPodMod
 =======
 iPod Mod Sound Importer is now separated into another repo instead of branch
 
+WARNING! Mod state is unstable! Do not attempt to debug! Will be stablilized later
+
 About Debugging:
 Due to strict debug limitations, do not debug directly! The code will look in the mods folder
 instead of mcp/src folder because of IpodSoundLoader. To debug properly, compile your code,
