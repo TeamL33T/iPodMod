@@ -3,6 +3,7 @@ package TeamL33T.IpodMod.gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -10,6 +11,8 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import TeamL33T.IpodMod.AppleDealerRecipes;
 import TeamL33T.IpodMod.container.ContainerAppleDeal;
 import TeamL33T.IpodMod.tileentity.InventoryAppleDeal;
